@@ -1,66 +1,78 @@
-## Foundry
+# Decentralized Shark Tank
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## Project Overview
 
-Foundry consists of:
+### Goal
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+Develop a decentralized application (dApp) that allows entrepreneurs to pitch their business ideas to potential investors (the "sharks") via smart contracts on the Ethereum blockchain. Investors can view proposals and make offers for equity or shares in the business.
 
-## Documentation
+## Key Features
 
-https://book.getfoundry.sh/
+### Main Contract and Business Proposals
 
-## Usage
+- **Main Contract**: Serves as a registry for all business proposals. It stores the addresses of individual contracts for each business idea, along with metadata such as the entrepreneur's name, business description, and proposed equity.
+- **Individual Proposal Contracts**: Each business idea can be deployed as a separate smart contract that inherits from the main contract, ensuring that all proposals are linked and manageable from one place.
 
-### Build
+### Investor Interaction
 
-```shell
-$ forge build
-```
+- **Viewing Proposals**: Sharks can view a list of all active business proposals on the main contract, including details about each proposal.
+- **Making Offers**: Sharks can submit offers that specify the amount of equity they are willing to invest in exchange for a specific investment amount. These offers could be time-sensitive, encouraging quick decisions.
 
-### Test
+### Equity and Share Management
 
-```shell
-$ forge test
-```
+- **Equity Calculation**: Smart contracts handle equity distribution based on investment amounts, automatically calculating percentages.
+- **Shareholding Records**: Contracts keep track of the shares held by each investor and provide transparency for both parties.
 
-### Format
+### Offer Acceptance and Rejection
 
-```shell
-$ forge fmt
-```
+- **Acceptance Logic**: Entrepreneurs can accept offers from sharks, triggering the transfer of funds and equity distribution.
+- **Counteroffers**: Entrepreneurs can counteroffer or reject offers, maintaining a flexible negotiation environment.
 
-### Gas Snapshots
+### Reputation and Feedback System
 
-```shell
-$ forge snapshot
-```
+- **Rating System**: After the negotiation, both sharks and entrepreneurs can rate their experience, fostering a reputation system that promotes fair practices and accountability.
+- **Profile System**: Investors can build profiles based on their investment history and ratings.
 
-### Anvil
+## Architecture
 
-```shell
-$ anvil
-```
+### Smart Contracts
 
-### Deploy
+- **Main Contract**: Manages all proposals and provides basic functionalities.
+- **Proposal Contracts**: Individual contracts for each business idea that manage details and investor interactions.
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+### Frontend
 
-### Cast
+- **React.js**: For building a user-friendly interface that allows entrepreneurs to submit their proposals and sharks to browse, make offers, and track their investments.
+- **Web3.js or Ethers.js**: For interacting with Ethereum smart contracts.
 
-```shell
-$ cast <subcommand>
-```
+## Technology Stack
 
-### Help
+- **Blockchain**: Ethereum
+- **Smart Contract Language**: Solidity
+- **Development Framework**: Foundry
+- **Frontend**: React.js
+- **Blockchain Interaction**: Web3.js or Ethers.js
+- **Storage**: IPFS (for storing any additional proposal data or files)
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+## Possibility
+
+This project is technically feasible and offers numerous opportunities for learning and growth in the following areas:
+
+- **Smart Contract Development**: Gain experience with Solidity and the intricacies of contract deployment and interaction.
+- **Frontend Development**: Enhance skills in React.js and user interface design, ensuring the platform is intuitive and engaging.
+- **Blockchain Concepts**: Deepen understanding of decentralized finance (DeFi) and investment mechanisms in a blockchain context.
+- **Networking**: Create a platform simulating real-world interactions between entrepreneurs and investors, providing insights into startup funding dynamics.
+
+## Challenges
+
+- **Regulatory Considerations**: Be mindful of the legal implications of crowdfunding and equity trading in your jurisdiction.
+- **User Experience**: Ensure a smooth and easy-to-understand process for users unfamiliar with blockchain technology.
+- **Security**: Implement robust security measures to prevent exploits or abuse of the smart contracts.
+
+## Conclusion
+
+Building a decentralized Shark Tank application is not only feasible but also an innovative way to explore the intersection of entrepreneurship and blockchain technology. It will allow you to showcase your skills in smart contract development, frontend engineering, and understanding of decentralized systems, making it a valuable addition to your resume.
+
+## License
+
+[MIT License](LICENSE)
