@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.19;
 
 import "forge-std/Test.sol";
-import "../src/Sharky.sol";
+import "../../src/Sharki.sol";
 
 contract SharkyTest is Test {
     SharkFactory factory;
-    Sharky campaign;
+    Sharki campaign;
     address manager;
     address contributor1;
     address contributor2;
@@ -20,7 +20,7 @@ contract SharkyTest is Test {
         factory.createCampaign(100);
 
         address campaignAddress = factory.getDeployedCampaigns()[0];
-        campaign = Sharky(campaignAddress);
+        campaign = Sharki(campaignAddress);
     }
 
     function testCreateCampaign() public view {
@@ -28,7 +28,7 @@ contract SharkyTest is Test {
     }
 
     function testManagerIsCorrect() public view {
-        assertEq(campaign.manager(), manager);
+        assertEq(campaign.i_manager(), manager);
     }
 
     function testContribute() public {
@@ -167,6 +167,19 @@ contract SharkyTest is Test {
         vm.prank(manager);
         vm.expectRevert();
         campaign.finalize(0);
+    }
+
+    function testGetContributorContracts() public {
+        _contribute(contributor1, 200, 10);
+        address[] memory contracts = factory.getContributorContracts(contributor1);
+        assertEq(contracts.length, 1);
+        assertEq(contracts[0], address(campaign));
+    }
+
+    function testGetManagerContracts() public {
+        address[] memory contracts = factory.getManagerContracts(manager);
+        assertEq(contracts.length, 1);
+        assertEq(contracts[0], address(campaign));
     }
 
     // Helper functions

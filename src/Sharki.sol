@@ -1,33 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.19;
 
 import {ReentrancyGuard} from "./ReentrancyGuard.sol";
-contract SharkFactory {
-    address[] public deployedCampaigns;
+import {SharkFactory} from "./SharkFactory.sol";
 
-    event CampaignCreated(address campaignAddress);
-
-    function createCampaign(uint minimum) public {
-        address newCampaign = address(new Sharky(minimum, msg.sender));
-        deployedCampaigns.push(newCampaign);
-        emit CampaignCreated(newCampaign);
-    }
-
-    function getDeployedCampaigns() public view returns (address[] memory) {
-        return deployedCampaigns;
-    }
-}
-
-contract Sharky is ReentrancyGuard {
-    address public immutable manager;
-    uint public immutable minContr;
-    uint8 public constant TOTAL_STOCK = 100;
-    uint8 public stockLeft = TOTAL_STOCK;
-
-    mapping(address => uint8) public contributers;
-    uint public contributerCount;
-    Request[] public requests;
-    ContributionRequest[] public contributerRequests;
+contract Sharki is ReentrancyGuard {
+    address public immutable i_manager;
+    uint public immutable i_minContr;
+    uint8 public stockLeft = 100;
+    SharkFactory public factory;
 
     struct Request {
         string description;
@@ -44,6 +25,11 @@ contract Sharky is ReentrancyGuard {
         uint value;
     }
 
+    mapping(address => uint8) public contributers;
+    uint public contributerCount;
+    Request[] public requests;
+    ContributionRequest[] public contributerRequests;
+
     event RequestCreated(string description, uint amount, address recipient);
     event ContributionMade(address contributer, uint8 stockRequested, uint value);
     event ContributionApproved(address contributer, uint8 stockRequested);
@@ -51,11 +37,13 @@ contract Sharky is ReentrancyGuard {
     event RequestApproved(uint reqIndex, address approver);
     event RequestFinalized(uint reqIndex, address recipient, uint amount);
 
-    constructor(uint minContribution, address sender) {
-        minContr = minContribution;
-        manager = sender;
+    constructor(uint minContribution, address sender, address factoryAddress) {
+        i_minContr = minContribution;
+        i_manager = sender;
+        factory = SharkFactory(factoryAddress);
     }
 
+    // External functions
     function createRequest(string calldata description, uint amount, address recipient) external onlyManager {
         Request storage req = requests.push();
         req.description = description;
@@ -71,13 +59,14 @@ contract Sharky is ReentrancyGuard {
     }
 
     function contribute(uint8 shareReq) external payable {
-        require(msg.value > minContr, "Not enough contribution");
+        require(msg.value > i_minContr, "Not enough contribution");
         require(shareReq <= stockLeft, "Not enough stock left");
         contributerRequests.push(ContributionRequest({
             contributer: msg.sender,
             stockRequested: shareReq,
             value: msg.value
         }));
+        factory.recordContribution(msg.sender, address(this));
         emit ContributionMade(msg.sender, shareReq, msg.value);
     }
 
@@ -129,8 +118,9 @@ contract Sharky is ReentrancyGuard {
         emit RequestFinalized(reqIndex, req.recipient, req.amount);
     }
 
+    // Modifiers
     modifier onlyManager() {
-        require(msg.sender == manager, "Unauthorized");
+        require(msg.sender == i_manager, "Unauthorized");
         _;
     }
 }
